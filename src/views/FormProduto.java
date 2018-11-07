@@ -8,7 +8,6 @@ package views;
 import conf.Conexao;
 import data.TabelaProduto;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -55,9 +54,7 @@ public class FormProduto extends javax.swing.JFrame {
     jFormattedTextFieldPrecoProduto = new javax.swing.JFormattedTextField();
     jButtonNovo = new javax.swing.JButton();
     jButtonSalvar = new javax.swing.JButton();
-    jButtonEditar = new javax.swing.JButton();
     jButtonExcluir = new javax.swing.JButton();
-    jButtonCancelar = new javax.swing.JButton();
     jScrollPane1 = new javax.swing.JScrollPane();
     jTableProdutos = new javax.swing.JTable();
     jButtonPesquisar = new javax.swing.JButton();
@@ -95,19 +92,11 @@ public class FormProduto extends javax.swing.JFrame {
       }
     });
 
-    jButtonEditar.setText("Editar");
-
     jButtonExcluir.setText("Excluir");
+    jButtonExcluir.setEnabled(false);
     jButtonExcluir.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         jButtonExcluirActionPerformed(evt);
-      }
-    });
-
-    jButtonCancelar.setText("Cancelar");
-    jButtonCancelar.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        jButtonCancelarActionPerformed(evt);
       }
     });
 
@@ -120,6 +109,11 @@ public class FormProduto extends javax.swing.JFrame {
     jScrollPane1.setViewportView(jTableProdutos);
 
     jButtonPesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/img/search.png"))); // NOI18N
+    jButtonPesquisar.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jButtonPesquisarActionPerformed(evt);
+      }
+    });
 
     jLabelid.setText("ID");
 
@@ -160,13 +154,9 @@ public class FormProduto extends javax.swing.JFrame {
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(jButtonSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(jButtonCancelar)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(jButtonEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(jButtonExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 526, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addContainerGap())
     );
     jPanel1Layout.setVerticalGroup(
@@ -188,12 +178,10 @@ public class FormProduto extends javax.swing.JFrame {
           .addComponent(jLabel2)
           .addComponent(jLabel3)
           .addComponent(jFormattedTextFieldPrecoProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addGap(18, 18, 18)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(jButtonNovo)
           .addComponent(jButtonSalvar)
-          .addComponent(jButtonCancelar)
-          .addComponent(jButtonEditar)
           .addComponent(jButtonExcluir))
         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
       .addGroup(jPanel1Layout.createSequentialGroup()
@@ -236,15 +224,20 @@ public class FormProduto extends javax.swing.JFrame {
 
   private void jButtonNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNovoActionPerformed
     // TODO add your handling code here:
+    jFormattedTextFieldid.setText("");
+    jFormattedTextFieldDescProduto.setText("");
+    jFormattedTextFieldQntProduto.setText("");
+    jFormattedTextFieldPrecoProduto.setText("");
+    jButtonExcluir.setEnabled(false);
   }//GEN-LAST:event_jButtonNovoActionPerformed
-
-  private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
-    // TODO add your handling code here:
-  }//GEN-LAST:event_jButtonCancelarActionPerformed
 
   private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarActionPerformed
     // TODO add your handling code here:
-    insert();
+    if (jFormattedTextFieldid.getText().equals("")) {
+      insert();
+    } else {
+      update();
+    }
 
     try {
       tabelaProduto.setResult(select());
@@ -263,7 +256,7 @@ public class FormProduto extends javax.swing.JFrame {
     jFormattedTextFieldDescProduto.setText(jTableProdutos.getValueAt(jTableProdutos.getSelectedRow(), 1).toString());
     jFormattedTextFieldQntProduto.setText(jTableProdutos.getValueAt(jTableProdutos.getSelectedRow(), 2).toString());
     jFormattedTextFieldPrecoProduto.setText(jTableProdutos.getValueAt(jTableProdutos.getSelectedRow(), 3).toString());
-    
+
     jButtonExcluir.setEnabled(true);
   }//GEN-LAST:event_jTableProdutosMouseClicked
 
@@ -274,27 +267,36 @@ public class FormProduto extends javax.swing.JFrame {
   private void jButtonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirActionPerformed
     // TODO add your handling code here:
     int opcao = JOptionPane.showConfirmDialog(this,
-                "Deseja realmente excluir este registro?",
-                "Registro Excluido!",
-                JOptionPane.YES_NO_OPTION);
-        if (opcao == JOptionPane.YES_OPTION) {
+            "Deseja realmente excluir este registro?",
+            "Registro Excluido!",
+            JOptionPane.YES_NO_OPTION);
+    if (opcao == JOptionPane.YES_OPTION) {
 
-            delete(jFormattedTextFieldid.getText());
+      delete(jFormattedTextFieldid.getText());
 
-            jFormattedTextFieldid.setText("");
-            jFormattedTextFieldDescProduto.setText("");
-            jFormattedTextFieldQntProduto.setText("");
-            jFormattedTextFieldPrecoProduto.setText("");
-            try {
-                tabelaProduto.setResult(select());
-            } catch (SQLException ex) {
-                Logger.getLogger(FormProduto.class.getName()).log(Level.SEVERE, null, ex);
-            }
+      jFormattedTextFieldid.setText("");
+      jFormattedTextFieldDescProduto.setText("");
+      jFormattedTextFieldQntProduto.setText("");
+      jFormattedTextFieldPrecoProduto.setText("");
+      try {
+        tabelaProduto.setResult(select());
+      } catch (SQLException ex) {
+        Logger.getLogger(FormProduto.class.getName()).log(Level.SEVERE, null, ex);
+      }
 
-            jButtonExcluir.setEnabled(false);
+      jButtonExcluir.setEnabled(false);
 
-        } 
+    }
   }//GEN-LAST:event_jButtonExcluirActionPerformed
+
+  private void jButtonPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPesquisarActionPerformed
+    // TODO add your handling code here:
+    if (jFormattedTextFieldid.getText().equals("")) {
+      JOptionPane.showMessageDialog(null, "Campo ID em branco!", "Atençao!", JOptionPane.INFORMATION_MESSAGE);
+    } else {
+      search(jFormattedTextFieldid.getText());
+    }
+  }//GEN-LAST:event_jButtonPesquisarActionPerformed
 
   /**
    * @param args the command line arguments
@@ -373,10 +375,37 @@ public class FormProduto extends javax.swing.JFrame {
     }
   }
 
+  public void update() {
+    String SQL = "update produto set descricao=?, quantidade=?, preco_und=?, data_atlz=now() "
+            + "where id = ?";
+    try {
 
+      PreparedStatement ps = this.conexao.getConexao().prepareStatement(SQL);
+
+      ps.setString(1, jFormattedTextFieldDescProduto.getText());
+      ps.setString(2, jFormattedTextFieldQntProduto.getText());
+      ps.setString(3, jFormattedTextFieldPrecoProduto.getText());
+      ps.setString(4, jFormattedTextFieldid.getText());
+
+      ps.executeUpdate();
+      ps.close();
+    } catch (SQLException ex) {
+      ex.printStackTrace();
+    }
+  }
+
+  public ResultSet search(String id) {
+    ResultSet rs = null;
+    String SQL = "select * from produto where id="+id;
+    try {
+      rs = stmt.executeQuery(SQL);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return rs;
+   
+    }
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private javax.swing.JButton jButtonCancelar;
-  private javax.swing.JButton jButtonEditar;
   private javax.swing.JButton jButtonExcluir;
   private javax.swing.JButton jButtonNovo;
   private javax.swing.JButton jButtonPesquisar;
