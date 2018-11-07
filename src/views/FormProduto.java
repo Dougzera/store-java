@@ -5,16 +5,34 @@
  */
 package views;
 
+import conf.Conexao;
+import data.TabelaProduto;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author doug
  */
 public class FormProduto extends javax.swing.JFrame {
 
-  /**
-   * Creates new form FormProduto
-   */
-  public FormProduto() {
+  public Conexao conexao;
+  public static Statement stmt;
+
+  private TabelaProduto tabelaProduto;
+
+  public FormProduto() throws SQLException {
+    conexao = new Conexao();
+    stmt = conexao.getConexao().createStatement();
+
+    tabelaProduto = new TabelaProduto(select());
+
     initComponents();
   }
 
@@ -68,6 +86,11 @@ public class FormProduto extends javax.swing.JFrame {
     });
 
     jButtonSalvar.setText("Salvar");
+    jButtonSalvar.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jButtonSalvarActionPerformed(evt);
+      }
+    });
 
     jButtonEditar.setText("Editar");
 
@@ -134,10 +157,11 @@ public class FormProduto extends javax.swing.JFrame {
       jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(jPanel1Layout.createSequentialGroup()
         .addContainerGap()
-        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-          .addComponent(jLabelDescProduto)
-          .addComponent(jFormattedTextFieldDescProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(jButtonPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(jButtonPesquisar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+            .addComponent(jLabelDescProduto)
+            .addComponent(jFormattedTextFieldDescProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(jFormattedTextFieldQntProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -199,6 +223,22 @@ public class FormProduto extends javax.swing.JFrame {
     // TODO add your handling code here:
   }//GEN-LAST:event_jButtonCancelarActionPerformed
 
+  private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarActionPerformed
+    // TODO add your handling code here:
+            insert();
+        
+        
+        try {
+            tabelaProduto.setResult(select());
+        } catch (SQLException ex) {
+            Logger.getLogger(FormProduto.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        jFormattedTextFieldDescProduto.setText("");
+        jFormattedTextFieldQntProduto.setText("");
+        jFormattedTextFieldPrecoProduto.setText("");
+  }//GEN-LAST:event_jButtonSalvarActionPerformed
+
   /**
    * @param args the command line arguments
    */
@@ -229,10 +269,53 @@ public class FormProduto extends javax.swing.JFrame {
     /* Create and display the form */
     java.awt.EventQueue.invokeLater(new Runnable() {
       public void run() {
-        new FormProduto().setVisible(true);
+        try{
+          new FormProduto().setVisible(true);
+        }catch(SQLException ex){
+          Logger.getLogger(FormProduto.class.getName()).log(Level.SEVERE, null, ex);
+        }
       }
     });
   }
+  
+  public ResultSet select() {
+        ResultSet rs = null;
+        String SQL = "select * from produto";
+        try {
+            rs = stmt.executeQuery(SQL);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rs;
+    }
+  
+  public void delete(String id) {
+        String SQL = "DELETE FROM produto WHERE id = " + id;
+        try {
+            this.stmt.executeUpdate(SQL);
+        } catch (SQLException ex) {
+           ex.printStackTrace();
+        }
+    }
+  
+  public void insert() {
+        String SQL = "INSERT INTO produto(descricao,quantidade, preco_und, data_cad, data_atlz) " + "VALUES (?,?,?,now(),now())";
+        try {
+            PreparedStatement ps = this.conexao.getConexao().prepareStatement(SQL);
+
+            ps.setString(1, jFormattedTextFieldDescProduto.getText());
+            ps.setInt(2, Integer.parseInt(jFormattedTextFieldQntProduto.getText()));
+            
+            BigDecimal d = new BigDecimal( jFormattedTextFieldPrecoProduto.getText());
+            ps.setBigDecimal(3, d);
+
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+  
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton jButtonCancelar;

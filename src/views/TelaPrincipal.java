@@ -5,6 +5,10 @@
  */
 package views;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author doug
@@ -118,8 +122,13 @@ public class TelaPrincipal extends javax.swing.JFrame {
   }// </editor-fold>//GEN-END:initComponents
 
   private void jButtonProdutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonProdutosActionPerformed
-    FormProduto tela = new FormProduto();
-    tela.setVisible(true);
+    try {
+      FormProduto tela = new FormProduto();
+      tela.setVisible(true);
+    } catch (SQLException ex) {
+      Logger.getLogger(FormProduto.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
   }//GEN-LAST:event_jButtonProdutosActionPerformed
 
   private void jButtonPagamentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPagamentosActionPerformed
@@ -131,7 +140,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
   }//GEN-LAST:event_jButtonVendasActionPerformed
 
   private void jMenuSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuSairActionPerformed
-    
+
   }//GEN-LAST:event_jMenuSairActionPerformed
 
   private void jMenuItemSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSairActionPerformed
@@ -140,8 +149,12 @@ public class TelaPrincipal extends javax.swing.JFrame {
   }//GEN-LAST:event_jMenuItemSairActionPerformed
 
   private void jMenuItemProdutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemProdutosActionPerformed
-    FormProduto tela = new FormProduto();
-    tela.setVisible(true);
+    try {
+      FormProduto tela = new FormProduto();
+      tela.setVisible(true);
+    } catch (SQLException ex) {
+      Logger.getLogger(FormProduto.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }//GEN-LAST:event_jMenuItemProdutosActionPerformed
 
   /**

@@ -1,4 +1,4 @@
-package controllers;
+package conf;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,7 +22,7 @@ public class Conexao {
     }
   }
 
-  public Connection getConn(){
+  public Connection getConexao(){
     return conn;
   }
   
