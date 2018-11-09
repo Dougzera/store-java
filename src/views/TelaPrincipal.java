@@ -137,6 +137,12 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
   private void jButtonVendasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonVendasActionPerformed
     // TODO add your handling code here:
+    try {
+      FormProduto tela = new FormProduto();
+      tela.setVisible(true);
+    } catch (SQLException ex) {
+      Logger.getLogger(FormProduto.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }//GEN-LAST:event_jButtonVendasActionPerformed
 
   private void jMenuSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuSairActionPerformed
