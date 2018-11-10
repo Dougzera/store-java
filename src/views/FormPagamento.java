@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import models.TipoPagamento;
 import static views.FormProduto.stmt;
 
 public class FormPagamento extends javax.swing.JFrame {
@@ -36,28 +37,46 @@ public class FormPagamento extends javax.swing.JFrame {
     conexao = new Conexao();
     stmt = conexao.getConexao().createStatement();
 
+    //TipoPagamento tp = new TipoPagamento();
     tabelaPagamento = new TabelaPagamento(select());
-    
+
     initComponents();
     preencherComboBox();
   }
 
   public void preencherComboBox() throws SQLException {
-    //ArrayList<String> strList = new ArrayList<String>();
-    String SQL = "select * from tipo_pag";
-    ResultSet rs = stmt.executeQuery(SQL);
+    TipoPagamento tipoPag = new TipoPagamento();
 
-    while (rs.next()) {
-      jComboBoxTipoPag.addItem(rs.getString("tipo"));
-      System.out.println("Descricao-> " + rs.getString("tipo") + rs.getString(1));
+    for(TipoPagamento obj:readModel()){
+      jComboBoxTipoPag.addItem(obj);
     }
 
-    //DefaultComboBoxModel defaultComboBox = new DefaultComboBoxModel(strList.toArray());
-    //jComboBoxTipoPag.setModel(defaultComboBox);
-    
-     
+  }//endFunction
 
-  }//End
+  public ArrayList<TipoPagamento> readModel() {
+    ArrayList<TipoPagamento> tiposPag = new ArrayList<>();
+
+    try {
+      String SQL = "select * from tipo_pag";
+      ResultSet rs = stmt.executeQuery(SQL);
+
+      while (rs.next()) {
+        TipoPagamento tp = new TipoPagamento();
+
+        tp.setId(rs.getInt("id"));
+        tp.setTipo(rs.getString("tipo"));
+        tp.setData_cad(rs.getString("data_cad"));
+        tp.setData_atlz(rs.getString("data_atlz"));
+        
+        tiposPag.add(tp);
+      }
+    } catch (SQLException ex) {
+      System.out.println("Erro " + ex);
+    }
+    
+    return tiposPag;
+
+  }//EndClass
 
   /**
    * This method is called from within the constructor to initialize the form.
@@ -78,7 +97,9 @@ public class FormPagamento extends javax.swing.JFrame {
     jFormattedTextFieldTaxa = new javax.swing.JFormattedTextField();
     jLabelTipoPag = new javax.swing.JLabel();
     jComboBoxTipoPag = new javax.swing.JComboBox<>();
-    jButtonTestar = new javax.swing.JButton();
+    jButtonNovo = new javax.swing.JButton();
+    jButtonSalvar = new javax.swing.JButton();
+    jButtonExcluir = new javax.swing.JButton();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -99,12 +120,21 @@ public class FormPagamento extends javax.swing.JFrame {
 
     jLabelTipoPag.setText("Tipo de Pagamento");
 
-    jButtonTestar.setText("Objeto");
-    jButtonTestar.addActionListener(new java.awt.event.ActionListener() {
+    jButtonNovo.setText("Novo");
+    jButtonNovo.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
-        jButtonTestarActionPerformed(evt);
+        jButtonNovoActionPerformed(evt);
       }
     });
+
+    jButtonSalvar.setText("Salvar");
+    jButtonSalvar.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jButtonSalvarActionPerformed(evt);
+      }
+    });
+
+    jButtonExcluir.setText("Excluir");
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
@@ -113,51 +143,56 @@ public class FormPagamento extends javax.swing.JFrame {
       .addGroup(layout.createSequentialGroup()
         .addContainerGap()
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 461, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addGroup(layout.createSequentialGroup()
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-              .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                .addComponent(jLabelTaxa)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jFormattedTextFieldTaxa))
-              .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                .addComponent(jLabelDesc)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jFormattedTextFieldDesc))
-              .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                .addComponent(jLabelid)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jFormattedTextFieldid, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)))
-            .addGap(93, 93, 93)
-            .addComponent(jButtonTestar))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 461, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addComponent(jButtonNovo)
+              .addComponent(jButtonSalvar)
+              .addComponent(jButtonExcluir)))
+          .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+              .addComponent(jLabelTaxa)
+              .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+              .addComponent(jFormattedTextFieldTaxa))
+            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+              .addComponent(jLabelDesc)
+              .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+              .addComponent(jFormattedTextFieldDesc))
+            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+              .addComponent(jLabelid)
+              .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+              .addComponent(jFormattedTextFieldid, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)))
           .addGroup(layout.createSequentialGroup()
             .addComponent(jLabelTipoPag)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(jComboBoxTipoPag, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-        .addContainerGap(366, Short.MAX_VALUE))
+        .addContainerGap(311, Short.MAX_VALUE))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addGroup(layout.createSequentialGroup()
+            .addComponent(jButtonNovo)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addComponent(jButtonSalvar)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addComponent(jButtonExcluir)))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(jLabelid)
           .addComponent(jFormattedTextFieldid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addGroup(layout.createSequentialGroup()
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-              .addComponent(jLabelDesc)
-              .addComponent(jFormattedTextFieldDesc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-              .addComponent(jLabelTaxa)
-              .addComponent(jFormattedTextFieldTaxa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-          .addGroup(layout.createSequentialGroup()
-            .addGap(14, 14, 14)
-            .addComponent(jButtonTestar)))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(jLabelDesc)
+          .addComponent(jFormattedTextFieldDesc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(jLabelTaxa)
+          .addComponent(jFormattedTextFieldTaxa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(jLabelTipoPag)
@@ -172,11 +207,24 @@ public class FormPagamento extends javax.swing.JFrame {
     // TODO add your handling code here:
   }//GEN-LAST:event_jFormattedTextFieldidActionPerformed
 
-  private void jButtonTestarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTestarActionPerformed
+  private void jButtonNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNovoActionPerformed
     // TODO add your handling code here:
-    Object obj = jComboBoxTipoPag.getSelectedItem();
-    System.out.println("Objeto aqui-> " + obj);
-  }//GEN-LAST:event_jButtonTestarActionPerformed
+  }//GEN-LAST:event_jButtonNovoActionPerformed
+
+  private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarActionPerformed
+    // TODO add your handling code here:
+    if(jFormattedTextFieldid.getText().equals("")){
+      insert();
+    }else{
+      System.out.println("zzzzzzz");
+    }
+    
+    try {
+      tabelaPagamento.setResult(select());
+    } catch (SQLException ex) {
+      Logger.getLogger(FormProduto.class.getName()).log(Level.SEVERE, null, ex);
+    }
+  }//GEN-LAST:event_jButtonSalvarActionPerformed
 
   /**
    * @param args the command line arguments
@@ -216,8 +264,7 @@ public class FormPagamento extends javax.swing.JFrame {
       }
     });
   }
-  
-  
+
   public ResultSet select() {
     ResultSet rs = null;
     String SQL = "select * from pagamento";
@@ -228,26 +275,29 @@ public class FormPagamento extends javax.swing.JFrame {
     }
     return rs;
   }
-  
-  
-  /*public void insert() {
+
+  public void insert() {
     String SQL = "INSERT INTO pagamento(descricao,taxa, data_cad, data_atlz, id_tipo_pag_fk) " + "VALUES (?,?,now(),now(),?)";
     try {
       PreparedStatement ps = this.conexao.getConexao().prepareStatement(SQL);
 
+      TipoPagamento tp = (TipoPagamento) jComboBoxTipoPag.getSelectedItem();
+      
       ps.setString(1, jFormattedTextFieldDesc.getText());
       ps.setFloat(2, Float.parseFloat(jFormattedTextFieldTaxa.getText()));
-      ps.setInt(5, jComboBoxTipoPag.getSelectedObjects()));
+      ps.setInt(3,tp.getId());
 
       ps.executeUpdate();
       ps.close();
     } catch (SQLException ex) {
       ex.printStackTrace();
     }
-  }*/
+  }
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private javax.swing.JButton jButtonTestar;
+  private javax.swing.JButton jButtonExcluir;
+  private javax.swing.JButton jButtonNovo;
+  private javax.swing.JButton jButtonSalvar;
   private javax.swing.JComboBox<Object> jComboBoxTipoPag;
   private javax.swing.JFormattedTextField jFormattedTextFieldDesc;
   private javax.swing.JFormattedTextField jFormattedTextFieldTaxa;
