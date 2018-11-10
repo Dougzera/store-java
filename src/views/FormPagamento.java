@@ -88,7 +88,7 @@ public class FormPagamento extends javax.swing.JFrame {
   private void initComponents() {
 
     jScrollPane1 = new javax.swing.JScrollPane();
-    jTable1 = new javax.swing.JTable();
+    jTablePagamentos = new javax.swing.JTable();
     jLabelid = new javax.swing.JLabel();
     jFormattedTextFieldid = new javax.swing.JFormattedTextField();
     jLabelDesc = new javax.swing.JLabel();
@@ -103,11 +103,17 @@ public class FormPagamento extends javax.swing.JFrame {
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-    jTable1.setModel(tabelaPagamento);
-    jScrollPane1.setViewportView(jTable1);
+    jTablePagamentos.setModel(tabelaPagamento);
+    jTablePagamentos.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        jTablePagamentosMouseClicked(evt);
+      }
+    });
+    jScrollPane1.setViewportView(jTablePagamentos);
 
     jLabelid.setText("ID");
 
+    jFormattedTextFieldid.setEnabled(false);
     jFormattedTextFieldid.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         jFormattedTextFieldidActionPerformed(evt);
@@ -135,6 +141,12 @@ public class FormPagamento extends javax.swing.JFrame {
     });
 
     jButtonExcluir.setText("Excluir");
+    jButtonExcluir.setEnabled(false);
+    jButtonExcluir.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jButtonExcluirActionPerformed(evt);
+      }
+    });
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
@@ -209,6 +221,10 @@ public class FormPagamento extends javax.swing.JFrame {
 
   private void jButtonNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNovoActionPerformed
     // TODO add your handling code here:
+    jFormattedTextFieldid.setText("");
+    jFormattedTextFieldDesc.setText("");
+    jFormattedTextFieldTaxa.setText("");
+    jButtonExcluir.setEnabled(false);
   }//GEN-LAST:event_jButtonNovoActionPerformed
 
   private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarActionPerformed
@@ -216,7 +232,7 @@ public class FormPagamento extends javax.swing.JFrame {
     if(jFormattedTextFieldid.getText().equals("")){
       insert();
     }else{
-      System.out.println("zzzzzzz");
+      update();
     }
     
     try {
@@ -224,7 +240,44 @@ public class FormPagamento extends javax.swing.JFrame {
     } catch (SQLException ex) {
       Logger.getLogger(FormProduto.class.getName()).log(Level.SEVERE, null, ex);
     }
+    
+    jFormattedTextFieldid.setText("");
+    jFormattedTextFieldDesc.setText("");
+    jFormattedTextFieldTaxa.setText("");
+    jButtonExcluir.setEnabled(false);
   }//GEN-LAST:event_jButtonSalvarActionPerformed
+
+  private void jTablePagamentosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTablePagamentosMouseClicked
+    // TODO add your handling code here:
+    jFormattedTextFieldid.setText(jTablePagamentos.getValueAt(jTablePagamentos.getSelectedRow(), 0).toString());
+    jFormattedTextFieldDesc.setText(jTablePagamentos.getValueAt(jTablePagamentos.getSelectedRow(), 1).toString());
+    jFormattedTextFieldTaxa.setText(jTablePagamentos.getValueAt(jTablePagamentos.getSelectedRow(), 2).toString());
+    jButtonExcluir.setEnabled(true);
+  }//GEN-LAST:event_jTablePagamentosMouseClicked
+
+  private void jButtonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirActionPerformed
+    // TODO add your handling code here:
+    int opcao = JOptionPane.showConfirmDialog(this,
+            "Deseja realmente excluir este registro?",
+            "Registro Excluido!",
+            JOptionPane.YES_NO_OPTION);
+    if (opcao == JOptionPane.YES_OPTION) {
+
+      delete(jFormattedTextFieldid.getText());
+
+      jFormattedTextFieldid.setText("");
+      jFormattedTextFieldDesc.setText("");
+      jFormattedTextFieldTaxa.setText("");
+      try {
+        tabelaPagamento.setResult(select());
+      } catch (SQLException ex) {
+        Logger.getLogger(FormProduto.class.getName()).log(Level.SEVERE, null, ex);
+      }
+
+      jButtonExcluir.setEnabled(false);
+
+    }
+  }//GEN-LAST:event_jButtonExcluirActionPerformed
 
   /**
    * @param args the command line arguments
@@ -293,6 +346,36 @@ public class FormPagamento extends javax.swing.JFrame {
       ex.printStackTrace();
     }
   }
+  
+  public void update(){
+    String SQL ="update pagamento set descricao=?, taxa=?, data_atlz=now(),id_tipo_pag_fk=? "
+            + "where id = ?";
+    try{
+    PreparedStatement ps = this.conexao.getConexao().prepareStatement(SQL);
+    TipoPagamento tp = (TipoPagamento) jComboBoxTipoPag.getSelectedItem();
+    
+    ps.setString(1,jFormattedTextFieldDesc.getText());
+    ps.setString(2, jFormattedTextFieldTaxa.getText());
+    ps.setInt(3, tp.getId());
+    ps.setString(4,jFormattedTextFieldid.getText());
+    
+    ps.executeUpdate();
+    ps.close();
+    
+    }catch(SQLException ex){
+      ex.printStackTrace();
+    }
+    
+  }
+  
+  public void delete(String id) {
+    String SQL = "DELETE FROM pagamento WHERE id = " + id;
+    try {
+      this.stmt.executeUpdate(SQL);
+    } catch (SQLException ex) {
+      ex.printStackTrace();
+    }
+  }
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton jButtonExcluir;
@@ -307,6 +390,6 @@ public class FormPagamento extends javax.swing.JFrame {
   private javax.swing.JLabel jLabelTipoPag;
   private javax.swing.JLabel jLabelid;
   private javax.swing.JScrollPane jScrollPane1;
-  private javax.swing.JTable jTable1;
+  private javax.swing.JTable jTablePagamentos;
   // End of variables declaration//GEN-END:variables
 }
