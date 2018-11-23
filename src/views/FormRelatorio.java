@@ -19,22 +19,24 @@ import data.Relatorio;
  * @author lucas
  */
 public class FormRelatorio extends javax.swing.JFrame {
-    
-      public Conexao conexao;
-      public static Statement stmt;
-      private Relatorio Relatorio;
+
+    public Conexao conexao;
+    public static Statement stmt;
+    private Relatorio Relatorio;
 
     /**
      * Creates new form FormRelatorio
      */
     public FormRelatorio() throws SQLException {
-            conexao = new Conexao();
-    stmt = conexao.getConexao().createStatement();
+        conexao = new Conexao();
+        stmt = conexao.getConexao().createStatement();
 
-    Relatorio = new Relatorio(select());
+        Relatorio = new Relatorio(select());     
+
+        initComponents();
         
-    initComponents();
-    
+        setLocationRelativeTo(null);
+        
     }
 
     /**
@@ -57,7 +59,11 @@ public class FormRelatorio extends javax.swing.JFrame {
         }
         jScrollPane2 = new javax.swing.JScrollPane();
         tblRelatorio = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jButtonTotalPorMes = new javax.swing.JButton();
+        jButtonTotalPorAno = new javax.swing.JButton();
+        jButtonTodosOsMeses = new javax.swing.JButton();
+        jButtonPorProduto = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -72,11 +78,33 @@ public class FormRelatorio extends javax.swing.JFrame {
         tblRelatorio.setName("tblRelatorio"); // NOI18N
         jScrollPane2.setViewportView(tblRelatorio);
 
-        jButton1.setText("Gerar");
-        jButton1.setName(""); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jLabel2.setText("Data Mes-Ano");
+
+        jButtonTotalPorMes.setText("Total por Mes");
+        jButtonTotalPorMes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonTotalPorMesActionPerformed(evt);
+            }
+        });
+
+        jButtonTotalPorAno.setText("Total por ano");
+        jButtonTotalPorAno.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonTotalPorAnoActionPerformed(evt);
+            }
+        });
+
+        jButtonTodosOsMeses.setText("Todos os Meses");
+        jButtonTodosOsMeses.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonTodosOsMesesActionPerformed(evt);
+            }
+        });
+
+        jButtonPorProduto.setText("Por Produto");
+        jButtonPorProduto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPorProdutoActionPerformed(evt);
             }
         });
 
@@ -85,25 +113,40 @@ public class FormRelatorio extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 225, Short.MAX_VALUE)
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jTextField1)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel2)
+                        .addComponent(jButtonTotalPorMes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonTotalPorAno, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonTodosOsMeses, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonPorProduto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addGap(44, 44, 44)
+                        .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(129, Short.MAX_VALUE))
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButtonTotalPorMes)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonTotalPorAno)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonTodosOsMeses)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonPorProduto)))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -116,8 +159,8 @@ public class FormRelatorio extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(393, 393, 393)
-                        .addComponent(jLabel1)))
+                        .addGap(304, 304, 304)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -133,23 +176,44 @@ public class FormRelatorio extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        tblRelatorio.setModel(Relatorio);
-        if (jTextField1.getText().equals("  -    ")) {
-               JOptionPane.showMessageDialog(null, "Campo DATA em branco!", "Atençao!", JOptionPane.INFORMATION_MESSAGE);
-           } else {
-               
-             try {
-                   Relatorio.setResult(search(jTextField1.getText()));
-                 } catch (SQLException ex) {
-                   Logger.getLogger(FormProduto.class.getName()).log(Level.SEVERE, null, ex);
-                 }
-               
-           }
-          
+    private void jButtonTotalPorMesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTotalPorMesActionPerformed
 
-           
-    }//GEN-LAST:event_jButton1ActionPerformed
+        if (jTextField1.getText().equals("  -    ")) {
+            JOptionPane.showMessageDialog(null, "Campo DATA em branco!", "Atençao!", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+
+            try {
+                Relatorio.setResult(totalPorMes(jTextField1.getText()));
+            } catch (SQLException ex) {
+                Logger.getLogger(FormProduto.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+    }//GEN-LAST:event_jButtonTotalPorMesActionPerformed
+
+    private void jButtonTotalPorAnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTotalPorAnoActionPerformed
+        try {
+            Relatorio.setResult(totalPorAno());
+        } catch (SQLException ex) {
+            Logger.getLogger(FormProduto.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonTotalPorAnoActionPerformed
+
+    private void jButtonTodosOsMesesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTodosOsMesesActionPerformed
+        try {
+            Relatorio.setResult(todosOsMeses());
+        } catch (SQLException ex) {
+            Logger.getLogger(FormProduto.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonTodosOsMesesActionPerformed
+
+    private void jButtonPorProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPorProdutoActionPerformed
+        try {
+            Relatorio.setResult(porProduto());
+        } catch (SQLException ex) {
+            Logger.getLogger(FormProduto.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonPorProdutoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -161,7 +225,7 @@ public class FormRelatorio extends javax.swing.JFrame {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
 
-        /* Create and display the form */
+ /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
@@ -172,40 +236,85 @@ public class FormRelatorio extends javax.swing.JFrame {
             }
         });
     }
-    
-    
-  public ResultSet search(String data) {
-    ResultSet rs = null;
-    String SQL = "SELECT p.data_atlz DATA, sum(p.preco_und) SOMA\n" +
-                 "FROM produto p\n" +
-                 "WHERE date_format(p.data_atlz,'%m-%Y') = '" +data+ "'\n" +
-                 "GROUP BY p.data_atlz";
-    try {
-      rs = stmt.executeQuery(SQL);
-    } catch (SQLException e) {
-      e.printStackTrace();
+
+    public ResultSet totalPorMes(String data) {
+        ResultSet rs = null;
+        String SQL = "SELECT  date_format(data_venda,'%m-%Y') A , CONVERT(CONCAT(SUM(total) , ' R$') USING utf8) B, '' as C\n"
+                + "                FROM venda \n"
+                + "                WHERE date_format(data_venda,'%m-%Y') = '" + data + "'\n"
+                + "                GROUP BY date_format(data_venda,'%m-%Y') ";
+        try {
+            rs = stmt.executeQuery(SQL);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rs;
+
     }
-    return rs;
-   
+
+    public ResultSet totalPorAno() {
+        ResultSet rs = null;
+        String SQL = "SELECT date_format(data_venda,'%Y') A , CONVERT(CONCAT(SUM(total) , ' R$') USING utf8) B, '' as C\n"
+                + "                FROM venda \n"
+                + "                GROUP BY date_format(data_venda,'%Y')  ";
+        try {
+            rs = stmt.executeQuery(SQL);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rs;
+
     }
-  
-  
+
+    public ResultSet todosOsMeses() {
+        ResultSet rs = null;
+        String SQL = "SELECT date_format(data_venda,'%m-%Y') A , CONVERT(CONCAT(SUM(total) , ' R$') USING utf8) B, '' as C\n"
+                + "                FROM venda \n"
+                + "                GROUP BY date_format(data_venda,'%m-%Y') ";
+        try {
+            rs = stmt.executeQuery(SQL);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rs;
+
+    }
+
+    public ResultSet porProduto() {
+        ResultSet rs = null;
+        String SQL = "SELECT p.descricao A, CONVERT(CONCAT(iv.preco_venda , ' R$') USING utf8) B, v.data_venda C\n"
+                + "				FROM item_venda iv, produto p, venda v\n"
+                + "				WHERE iv.produto_id = p.id\n"
+                + "				AND iv.venda_id = v.id";
+        try {
+            rs = stmt.executeQuery(SQL);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rs;
+
+    }
+
     public ResultSet select() {
-    ResultSet rs = null;
-    String SQL = "SELECT p.data_atlz DATA, sum(p.preco_und) SOMA\n" +
-                 "FROM produto p\n" +
-                 "GROUP BY p.data_atlz";
-    try {
-      rs = stmt.executeQuery(SQL);
-    } catch (SQLException e) {
-      e.printStackTrace();
+        ResultSet rs = null;
+        String SQL = "SELECT '' A, '' B, '' C\n"
+                + "FROM produto p\n"
+                + "GROUP BY p.data_atlz";
+        try {
+            rs = stmt.executeQuery(SQL);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rs;
     }
-    return rs;
-  }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonPorProduto;
+    private javax.swing.JButton jButtonTodosOsMeses;
+    private javax.swing.JButton jButtonTotalPorAno;
+    private javax.swing.JButton jButtonTotalPorMes;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField jTextField1;

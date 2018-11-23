@@ -16,7 +16,7 @@ import javax.swing.table.AbstractTableModel;
  */
 public class Relatorio extends AbstractTableModel {
       private static final String[] colNomes={
-        "DATA", "SOMA"
+        "A", "B", "C"
     };
     
     private ArrayList<String[]> ResultSets;
@@ -35,8 +35,9 @@ public class Relatorio extends AbstractTableModel {
         
         while (rs.next()){
             String[] row = {
-                rs.getString("DATA"),
-                rs.getString("SOMA"),
+                rs.getString("A"),
+                rs.getString("B"),
+                rs.getString("C")
             };
 
             ResultSets.add(row);                    
