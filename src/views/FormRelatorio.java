@@ -300,7 +300,7 @@ public class FormRelatorio extends javax.swing.JFrame {
 
   public ResultSet porTipoPag() {
     ResultSet rs = null;
-    String SQL = "SELECT SUM(V.total) A, V.data_venda B, TP.tipo C FROM db_loja.venda V\n"
+    String SQL = "SELECT CONCAT('R$ ', SUM(V.total)) B, date_format(V.data_venda,'%d-%m-%Y') A, TP.tipo C FROM db_loja.venda V\n"
             + "\n"
             + "INNER JOIN db_loja.venda_has_pagamento VP ON (VP.venda_id = V.id) \n"
             + "INNER JOIN db_loja.tipo_pag TP ON (TP.id = VP.pagamento_id_tipo_pag_fk)\n"
@@ -317,7 +317,7 @@ public class FormRelatorio extends javax.swing.JFrame {
 
   public ResultSet porProduto() {
     ResultSet rs = null;
-    String SQL = "SELECT SUM(V.preco_venda) A, PD.descricao B, SUM(V.quantidade) C\n"
+    String SQL = "SELECT CONCAT('R$ ', SUM(V.preco_venda)) A, PD.descricao B, SUM(V.quantidade) C\n"
             + "FROM item_venda V \n"
             + "INNER JOIN produto PD ON PD.id = V.produto_id\n"
             + "GROUP BY V.produto_id, PD.descricao";
