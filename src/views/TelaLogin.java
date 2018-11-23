@@ -21,18 +21,18 @@ import javax.swing.JOptionPane;
  */
 public class TelaLogin extends javax.swing.JFrame {
 
-    public Conexao conexao;   
+    public Conexao conexao;
     public static Statement stmt;
-    
+
     /**
      * Creates new form TelaLogin
      */
     public TelaLogin() throws SQLException {
         initComponents();
-        
+
         conexao = new Conexao();
         stmt = conexao.getConexao().createStatement();
-        
+
         setLocationRelativeTo(null);
     }
 
@@ -135,60 +135,60 @@ public class TelaLogin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
-         System.exit(0);
+        System.exit(0);
     }//GEN-LAST:event_jButtonCancelarActionPerformed
 
     private void jButtonEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEntrarActionPerformed
-        try {               
+        try {
 
             ResultSet rs = null;
-            String SQL = "select * from usuarios where email='" + 
-                    jTextField1.getText() + "' and senha=md5('" + new String(jPasswordField1.getPassword()) + "')";                       
+            String SQL = "select * from usuarios where email='"
+                    + jTextField1.getText() + "' and senha=md5('" + new String(jPasswordField1.getPassword()) + "')";
 
             System.out.println(SQL);
-            
+
             rs = stmt.executeQuery(SQL);
-            
+
             int i = 0;
-            
-            while (rs.next()){
+
+            while (rs.next()) {
                 i++;
             }
-            
-            if (i == 1){
+
+            if (i == 1) {
                 TelaPrincipal tela = new TelaPrincipal();
-                tela.setVisible(true);            
+                tela.setVisible(true);
                 this.dispose();
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(rootPane, "Usuário e/ou senha incorretos!", "Erro!", JOptionPane.ERROR_MESSAGE);
             }
-            
-            
+
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-                // TODO add your handling code here:
+        // TODO add your handling code here:
     }//GEN-LAST:event_jButtonEntrarActionPerformed
 
     private void jButtonCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCadastroActionPerformed
-           String SQL = "INSERT INTO usuarios (email,senha) " + "VALUES (?,md5(?))";
-    try {
-      PreparedStatement ps = this.conexao.getConexao().prepareStatement(SQL);
-      if(jTextField1.getText().length() >= 4 && jPasswordField1.getText().length() >= 6){
-       
-      ps.setString(1, jTextField1.getText());
-      ps.setString(2, jPasswordField1.getText());
-      ps.executeUpdate();
-      ps.close();
-      
-      JOptionPane.showMessageDialog(rootPane, "Cadastrado com sucesso!!", "Cadastro", JOptionPane.INFORMATION_MESSAGE);   
-      }else {
-          JOptionPane.showMessageDialog(rootPane, "Insira ao menos 6 Caracters na senha e 4 no nome", "Erro!", JOptionPane.ERROR_MESSAGE);
-      }
-      
-    } catch (SQLException ex) {
-      ex.printStackTrace();
-    }
+        String SQL = "INSERT INTO usuarios (email,senha) " + "VALUES (?,md5(?))";
+        try {
+            PreparedStatement ps = this.conexao.getConexao().prepareStatement(SQL);
+            if (jTextField1.getText().length() >= 4 && jPasswordField1.getText().length() >= 6) {
+
+                ps.setString(1, jTextField1.getText());
+                ps.setString(2, jPasswordField1.getText());
+                ps.executeUpdate();
+                ps.close();
+
+                JOptionPane.showMessageDialog(rootPane, "Cadastrado com sucesso!!", "Cadastro", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(rootPane, "Insira ao menos 6 Caracters na senha e 4 no nome", "Erro!", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(rootPane, "USUARIO JA EXISTE", "ERROR", JOptionPane.ERROR_MESSAGE);
+//            ex.printStackTrace();
+        }
     }//GEN-LAST:event_jButtonCadastroActionPerformed
 
     /**
